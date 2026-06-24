@@ -7,6 +7,23 @@ using System.Linq;
 using System.Windows.Forms;
 
 // ═══════════════════════════════════════════════════════════════════════════════
+// PANEL CON DOUBLE BUFFERING — elimina el parpadeo en todos los paneles
+// ═══════════════════════════════════════════════════════════════════════════════
+
+public class BufferedPanel : Panel
+{
+    public BufferedPanel()
+    {
+        SetStyle(
+            ControlStyles.OptimizedDoubleBuffer |
+            ControlStyles.AllPaintingInWmPaint  |
+            ControlStyles.UserPaint,
+            true);
+        UpdateStyles();
+    }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
 // MENU PRINCIPAL
 // ═══════════════════════════════════════════════════════════════════════════════
 
@@ -18,7 +35,7 @@ public class MenuPrincipal : Form
     private Button btn2J;
     private Timer  timerAnim;
     private float  offsetOnda = 0f;
-    private Panel  panelControles;
+    private BufferedPanel  panelControles;
 
     public MenuPrincipal()
     {
@@ -74,7 +91,7 @@ public class MenuPrincipal : Form
         btn1J.Click += (s, e) => SeleccionarModo(1);
         btn2J.Click += (s, e) => SeleccionarModo(2);
 
-        panelControles = new Panel
+        panelControles = new BufferedPanel
         {
             Bounds    = new Rectangle(140, 335, 520, 90),
             BackColor = Color.Transparent
@@ -277,11 +294,11 @@ public class PantallaJuego : Form
     private const int    MaxRecetasActivas = 3;
 
     // ── Panels y timer ──────────────────────────────────────────────────────
-    private Panel panelHUD;
-    private Panel panelMapa;
-    private Panel panelRecetas;
+    private BufferedPanel panelHUD;
+    private BufferedPanel panelMapa;
+    private BufferedPanel panelRecetas;
     private Timer timerJuego;   // 1 segundo
-    private Timer timerLogica;  // 100ms para preparacion de estaciones
+    private Timer timerLogica;  // 200ms para preparacion de estaciones
 
     // ── Fuentes reutilizables ───────────────────────────────────────────────
     private Font fuenteEmoji;
@@ -418,21 +435,21 @@ public class PantallaJuego : Form
     {
         int anchoMapa = Columnas * TamCelda;
 
-        panelHUD = new Panel
+        panelHUD = new BufferedPanel
         {
             Bounds    = new Rectangle(0, 0, anchoMapa, AlturaHUD),
             BackColor = Color.FromArgb(22, 18, 48)
         };
         panelHUD.Paint += PintarHUD;
 
-        panelMapa = new Panel
+        panelMapa = new BufferedPanel
         {
             Bounds    = new Rectangle(0, AlturaHUD, anchoMapa, Filas * TamCelda),
             BackColor = Color.FromArgb(30, 24, 55)
         };
         panelMapa.Paint += PintarMapa;
 
-        panelRecetas = new Panel
+        panelRecetas = new BufferedPanel
         {
             Bounds    = new Rectangle(0, AlturaHUD + Filas * TamCelda, anchoMapa, AlturaRecetas),
             BackColor = Color.FromArgb(18, 14, 40)
@@ -460,10 +477,10 @@ public class PantallaJuego : Form
         timerJuego.Start();
 
         // Timer de logica: 100ms, actualiza estaciones y recetas
-        timerLogica = new Timer { Interval = 100 };
+        timerLogica = new Timer { Interval = 200 };
         timerLogica.Tick += (s, e) =>
         {
-            float dt = 0.1f;
+            float dt = 0.2f;
 
             // Actualizar estaciones de trabajo
             foreach (var est in estaciones)
