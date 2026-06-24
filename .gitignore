@@ -1,0 +1,45 @@
+# Visual Studio / .NET
+.vs/
+.vscode/
+*.user
+*.suo
+*.userprefs
+
+# Build artifacts
+bin/
+obj/
+**/bin/
+**/obj/
+
+# NuGet
+packages/
+*.nupkg
+project.assets.json
+
+# Rider
+/.idea/
+
+# Logs and temporary files
+*.log
+*.tmp
+*.cache
+*.bak
+
+# OS files
+Thumbs.db
+desktop.ini
+
+# Publish
+publish/
+*.publishsettings
+
+# Runtime
+*.pid
+*.svclog
+
+# Rider, resharper
+*.DotSettings.user
+
+# Mono
+*.exe
+*.dll
